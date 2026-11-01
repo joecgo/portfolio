@@ -343,7 +343,7 @@ html { scroll-behavior: smooth; }
                 <span class="ref">ADR-0008 · 0013</span>
               </li>
               <li>
-                <div><h4>It always lands</h4><p>Touchdown counts only on a steady downward range reading. Without one, a slow final descent continues until a time limit, so a failing sensor can't cut the motors in mid-air.</p></div>
+                <div><h4>It always lands</h4><p>The drone only turns off its motors when its downward sensor clearly shows it's on the floor. If that sensor stops working, the drone keeps descending slowly until a time limit says it must have landed. A bad reading can never shut the motors off in mid-air.</p></div>
                 <span class="ref">ADR-0012 · 0019</span>
               </li>
               <li>
