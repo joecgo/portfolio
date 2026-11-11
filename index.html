@@ -267,6 +267,7 @@ html { scroll-behavior: smooth; }
   <a class="site" href="#top">joecgo.com</a>
   <nav aria-label="Sections">
     <a href="#projects">Projects</a>
+    <a href="#workflow">Working with Claude</a>
     <a href="#experience">Experience</a>
     <a href="#contact">Contact</a>
   </nav>
@@ -316,10 +317,10 @@ html { scroll-behavior: smooth; }
       <div class="projects">
         <article class="project" id="drone" aria-labelledby="drone-h">
           <dl class="meta">
-            <div><dt class="label">Status</dt><dd><span class="status">In progress</span><br>Runs on a mock drone; first hardware session planned</dd></div>
+            <div><dt class="label">Status</dt><dd><span class="status">In progress</span><br>Flying on hardware; three field-test sessions so far</dd></div>
             <div><dt class="label">Started</dt><dd>2026</dd></div>
             <div><dt class="label">Language</dt><dd>Python 3.12</dd></div>
-            <div><dt class="label">Tools</dt><dd>cflib, pytest, pyright (strict), ruff, GitHub Actions</dd></div>
+            <div><dt class="label">Tools</dt><dd>cflib, pytest, pyright (strict), ruff, GitHub Actions, Claude Code</dd></div>
             <div><dt class="label">Hardware</dt><dd>Crazyflie 2.1+ with Flow, Multi-ranger and Buzzer decks</dd></div>
             <div><dt class="label">Links</dt><dd class="links"><a href="https://github.com/joecgo/crazyflie-behavior" target="_blank" rel="noopener">Code ↗</a><a href="https://github.com/joecgo/crazyflie-behavior/tree/main/docs/decisions" target="_blank" rel="noopener">Decision records ↗</a></dd></div>
           </dl>
@@ -355,7 +356,22 @@ html { scroll-behavior: smooth; }
                 <span class="ref">ADR-0002 · 0009 · 0023</span>
               </li>
             </ul>
-            <p class="process">Every design decision is written up with the options considered, 42 records so far. I set the goals and make the calls; implementation is AI-assisted, and each record notes whose idea it was. Formatting, lint, strict type checks and tests, including architecture rules enforced as tests, run on every push. Real flights follow a written field-testing plan: pass criteria set before each session, results fed back into the design.</p>
+            <p class="label subhead">From the field</p>
+            <ul class="items">
+              <li>
+                <div><h4>First hover through its own code</h4><p>The first hardware session ended with a 60-second hover at 0.5 m, run by the project's own tick loop and safety layer, landing 4 cm from the take-off mark.</p></div>
+                <span class="ref">First flight 1</span>
+              </li>
+              <li>
+                <div><h4>Near the floor, the flow sensor lies</h4><p>The drone slid as it landed. The analysis showed its optical-flow reading goes bad close to the floor, so take-off and landing now cross that zone level, holding vertical speed only.</p></div>
+                <span class="ref">ADR-0048</span>
+              </li>
+              <li>
+                <div><h4>Slow climbs, traced into the firmware</h4><p>In the third session, climbs stalled near the floor. The flight logs and the firmware source showed the firmware's starting thrust sat far below what this drone needs to hover, so the adapter now sets it at connect, to be checked in the next session.</p></div>
+                <span class="ref">ADR-0061</span>
+              </li>
+            </ul>
+            <p class="process">Every design decision is written up with the options considered, 61 records so far. Real flights follow a written field-testing plan: pass criteria set before each session, results fed back into the design. Implementation is AI-assisted; <a href="#workflow">here's how I work with Claude</a>.</p>
           </div>
         </article>
 
@@ -402,6 +418,54 @@ html { scroll-behavior: smooth; }
             </div>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="workflow" aria-labelledby="workflow-h">
+    <div class="wrap">
+      <div class="block-head">
+        <p class="label">AI-assisted engineering</p>
+        <h2 id="workflow-h">Working with Claude</h2>
+      </div>
+
+      <div class="project">
+        <dl class="meta">
+          <div><dt class="label">Used on</dt><dd>Hide-and-seek drone</dd></div>
+          <div><dt class="label">Tools</dt><dd>Claude Code, custom skills, GitHub Actions</dd></div>
+          <div><dt class="label">Links</dt><dd class="links"><a href="https://github.com/joecgo/crazyflie-behavior/tree/main/docs/decisions" target="_blank" rel="noopener">Decision records ↗</a><a href="https://github.com/joecgo/crazyflie-behavior/blob/main/docs/claude-mistakes.md" target="_blank" rel="noopener">Mistakes log ↗</a><a href="https://github.com/joecgo/crazyflie-behavior/blob/main/REVIEW.md" target="_blank" rel="noopener">Review checklist ↗</a></dd></div>
+        </dl>
+
+        <div class="project-body">
+          <p class="lede">Claude writes the code. I make the design decisions, supervise and teach. The workflow keeps us in sync: the same understanding of how the project is designed, and the same words to describe it.</p>
+
+          <ul class="items">
+            <li>
+              <div><h4>A paper trail for every decision</h4><p>Each design decision is its own short record, approved by me. Claude lays out the options, flags the risks and reminds me of earlier decisions that conflict. The records let Claude work within the design, or propose a new decision that amends it.</p></div>
+              <span class="ref">61 records</span>
+            </li>
+            <li>
+              <div><h4>One shared vocabulary</h4><p>A glossary of approved terms, used exactly in code, docs and conversation, plus a style guide. Claude proposes new terms; I approve them.</p></div>
+              <span class="ref">docs/glossary.md</span>
+            </li>
+            <li>
+              <div><h4>A review that knows the project</h4><p>I built a custom skill, <code>/project-review</code>, to use instead of a plain code review. It checks the code against the decision records, the glossary, the style guide and a checklist built from Claude's past mistakes, so it reviews the documentation as well as the code.</p></div>
+              <span class="ref">/project-review</span>
+            </li>
+            <li>
+              <div><h4>Then I read every line</h4><p>After Claude's review, I go through the code line by line. What I find becomes a new style rule or an entry in the mistakes log, so the next review knows to look for it.</p></div>
+              <span class="ref">124 mistakes logged</span>
+            </li>
+            <li>
+              <div><h4>Explain it back</h4><p>Claude quizzes me as we work, asking me to explain design decisions back, so I can defend every part of the project.</p></div>
+              <span class="ref">Checkpoints</span>
+            </li>
+            <li>
+              <div><h4>Tests on every push</h4><p>Claude writes the tests and proves each one by planting the bug it should catch. The full suite, 665 tests, runs in continuous integration on every push.</p></div>
+              <span class="ref">GitHub Actions</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
