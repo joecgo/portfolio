@@ -220,6 +220,10 @@ section.block { border-top: 1px solid var(--rule); padding-block: clamp(40px, 6v
 .clip { margin: 0; display: grid; gap: 8px; max-width: 240px; }
 .clip video { width: 100%; aspect-ratio: 416 / 440; background: var(--video-bg); border-radius: 3px; border: 1px solid var(--rule); }
 .clip figcaption { font-size: 0.8125rem; color: var(--ink-2); line-height: 1.45; }
+.clips { display: grid; gap: 20px; align-items: start; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 500px; }
+@media (min-width: 1000px) { .clips { grid-template-columns: 1fr; max-width: none; } }
+.clips .clip { max-width: none; }
+.clips .clip video { aspect-ratio: auto; height: auto; }
 
 /* Experience */
 .jobs { display: grid; gap: 0; border-top: 1px solid var(--rule); }
@@ -357,6 +361,7 @@ html { scroll-behavior: smooth; }
               </li>
             </ul>
             <p class="label subhead">From the field</p>
+            <div class="split">
             <ul class="items">
               <li>
                 <div><h4>First hover through its own code</h4><p>The first hardware session ended with a 60-second hover at 0.5 m, run by the project's own tick loop and safety layer, landing 4 cm from the take-off mark.</p></div>
@@ -371,6 +376,17 @@ html { scroll-behavior: smooth; }
                 <span class="ref">ADR-0061</span>
               </li>
             </ul>
+            <div class="clips">
+              <figure class="clip">
+                <video src="media/failsafe-low.mp4" poster="media/failsafe-low.jpg" width="560" height="648" autoplay muted loop playsinline preload="metadata" aria-label="The drone lifts a few centimeters off a wooden floor, then settles back down and stops."></video>
+                <figcaption>First flight, 2026-11-04. Failsafe low: take off toward 0.1 m, then land on a battery fault. On this first run the battery really was low, so the real low-battery failsafe landed it before the simulated fault fired.</figcaption>
+              </figure>
+              <figure class="clip">
+                <video src="media/hover-landing.mp4" poster="media/hover-landing.jpg" width="480" height="854" autoplay muted loop playsinline preload="metadata" aria-label="The drone descends from a hover onto a tiled floor and lands."></video>
+                <figcaption>The end of the first 60-second hover at 0.5 m. It landed about 4 cm from the take-off point, after a short slide on the floor that led to ADR-0048.</figcaption>
+              </figure>
+            </div>
+            </div>
             <p class="process">Every design decision is written up with the options considered, 61 records so far. Real flights follow a written field-testing plan: pass criteria set before each session, results fed back into the design. Implementation is AI-assisted; <a href="#workflow">here's how I work with Claude</a>.</p>
           </div>
         </article>
@@ -567,11 +583,12 @@ html { scroll-behavior: smooth; }
   });
 
   /* ---------- Engine clip ---------- */
-  var clip = document.getElementById("softbox");
+  var clips = document.querySelectorAll("video[autoplay]");
   function clipMotion() {
-    if (!clip) return;
-    if (reduceMQ.matches) { clip.pause(); clip.controls = true; }
-    else { clip.controls = false; var p = clip.play(); if (p && p.catch) p.catch(function () {}); }
+    Array.prototype.forEach.call(clips, function (clip) {
+      if (reduceMQ.matches) { clip.pause(); clip.controls = true; }
+      else { clip.controls = false; var p = clip.play(); if (p && p.catch) p.catch(function () {}); }
+    });
   }
   clipMotion();
 
