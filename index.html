@@ -224,6 +224,9 @@ section.block { border-top: 1px solid var(--rule); padding-block: clamp(40px, 6v
 @media (min-width: 1000px) { .clips { grid-template-columns: 1fr; max-width: none; } }
 .clips .clip { max-width: none; }
 .clips .clip video { aspect-ratio: auto; height: auto; }
+.shot { margin: 0; display: grid; gap: 8px; max-width: 640px; }
+.shot img { display: block; width: 100%; height: auto; border-radius: 3px; border: 1px solid var(--rule); }
+.shot figcaption { font-size: 0.8125rem; color: var(--ink-2); line-height: 1.45; }
 
 /* Experience */
 .jobs { display: grid; gap: 0; border-top: 1px solid var(--rule); }
@@ -326,7 +329,7 @@ html { scroll-behavior: smooth; }
             <div><dt class="label">Language</dt><dd>Python 3.12</dd></div>
             <div><dt class="label">Tools</dt><dd>cflib, pytest, pyright (strict), ruff, GitHub Actions, Claude Code</dd></div>
             <div><dt class="label">Hardware</dt><dd>Crazyflie 2.1+ with Flow, Multi-ranger and Buzzer decks</dd></div>
-            <div><dt class="label">Links</dt><dd class="links"><a href="https://github.com/joecgo/crazyflie-behavior" target="_blank" rel="noopener">Code ↗</a><a href="crazyflie-project-tour/" target="_blank" rel="noopener">Project tour ↗</a><a href="https://github.com/joecgo/crazyflie-behavior/tree/main/docs/decisions" target="_blank" rel="noopener">Decision records ↗</a></dd></div>
+            <div><dt class="label">Links</dt><dd class="links"><a href="crazyflie-project-tour/" target="_blank" rel="noopener">Project tour ↗</a><a href="https://github.com/joecgo/crazyflie-behavior" target="_blank" rel="noopener">Code ↗</a><a href="https://github.com/joecgo/crazyflie-behavior/tree/main/docs/decisions" target="_blank" rel="noopener">Decision records ↗</a></dd></div>
           </dl>
 
           <div class="project-body">
@@ -336,6 +339,11 @@ html { scroll-behavior: smooth; }
             </div>
             <p class="lede">A Crazyflie nano drone that plays hide-and-seek with a small child, built with techniques from game NPCs: a map of the room, hiding-spot selection and line-of-sight checks, on a robot whose sensors are noisy and whose position drifts.</p>
             <p>While the child waits behind a gate, the drone flies off, lands behind a wall and turns its motors off. The child hunts for it, helped by a flash-and-chirp hint every 15 seconds. When they pick it up, it lights up and the computer plays a fanfare.</p>
+
+            <figure class="shot">
+              <a href="crazyflie-project-tour/" target="_blank" rel="noopener"><img src="media/tour-flight.png" width="800" height="400" alt="Project tour: a chart of height against time for a take-off, hover and landing, with the drone partway down."></a>
+              <figcaption>From the <a href="crazyflie-project-tour/" target="_blank" rel="noopener">project tour</a>'s flight animation: a take-off and landing modeled from the code's numbers, not a recorded flight.</figcaption>
+            </figure>
 
             <p class="label subhead">Design decisions</p>
             <ul class="items">
